@@ -10,6 +10,7 @@ import { createClient } from '@/lib/supabase/client'
 import type { Book, UserBook } from '@/types/database.types'
 import Link from 'next/link'
 import { useTranslations } from 'next-intl'
+import { TrendingBooks } from '@/components/trending-books'
 
 interface BookWithStats extends Book {
   rating_count: number
@@ -95,62 +96,74 @@ export default function BooksPage() {
     <div className="min-h-screen bg-slate-50">
       <Navbar />
       <main className="container mx-auto px-4 py-8">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-slate-900 mb-2">{t('title')}</h1>
             <p className="text-slate-600">Popular and highly-rated books from our community</p>
           </div>
 
-          <Tabs defaultValue="popular">
-            <TabsList className="mb-6">
-              <TabsTrigger value="popular">
-                <TrendingUp className="mr-2 h-4 w-4" />
-                {t('mostPopular')}
-              </TabsTrigger>
-              <TabsTrigger value="rated">
-                <Star className="mr-2 h-4 w-4" />
-                {t('highestRated')}
-              </TabsTrigger>
-            </TabsList>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Main Content */}
+            <div className="lg:col-span-2">
+              <Tabs defaultValue="popular">
+                <TabsList className="mb-6">
+                  <TabsTrigger value="popular">
+                    <TrendingUp className="mr-2 h-4 w-4" />
+                    {t('mostPopular')}
+                  </TabsTrigger>
+                  <TabsTrigger value="rated">
+                    <Star className="mr-2 h-4 w-4" />
+                    {t('highestRated')}
+                  </TabsTrigger>
+                </TabsList>
 
-            <TabsContent value="popular">
-              {popularBooks.length === 0 ? (
-                <Card>
-                  <CardContent className="p-12 text-center">
-                    <TrendingUp className="h-12 w-12 text-slate-300 mx-auto mb-4" />
-                    <p className="text-slate-600">
-                      {t('noBooks')}
-                    </p>
-                  </CardContent>
-                </Card>
-              ) : (
-                <div className="space-y-4">
-                  {popularBooks.map((book, index) => (
-                    <BookListItem key={book.id} book={book} rank={index + 1} />
-                  ))}
-                </div>
-              )}
-            </TabsContent>
+                <TabsContent value="popular">
+                  {popularBooks.length === 0 ? (
+                    <Card>
+                      <CardContent className="p-12 text-center">
+                        <TrendingUp className="h-12 w-12 text-slate-300 mx-auto mb-4" />
+                        <p className="text-slate-600">
+                          {t('noBooks')}
+                        </p>
+                      </CardContent>
+                    </Card>
+                  ) : (
+                    <div className="space-y-4">
+                      {popularBooks.map((book, index) => (
+                        <BookListItem key={book.id} book={book} rank={index + 1} />
+                      ))}
+                    </div>
+                  )}
+                </TabsContent>
 
-            <TabsContent value="rated">
-              {highestRated.length === 0 ? (
-                <Card>
-                  <CardContent className="p-12 text-center">
-                    <Star className="h-12 w-12 text-slate-300 mx-auto mb-4" />
-                    <p className="text-slate-600">
-                      {t('noBooks')}
-                    </p>
-                  </CardContent>
-                </Card>
-              ) : (
-                <div className="space-y-4">
-                  {highestRated.map((book, index) => (
-                    <BookListItem key={book.id} book={book} rank={index + 1} />
-                  ))}
-                </div>
-              )}
-            </TabsContent>
-          </Tabs>
+                <TabsContent value="rated">
+                  {highestRated.length === 0 ? (
+                    <Card>
+                      <CardContent className="p-12 text-center">
+                        <Star className="h-12 w-12 text-slate-300 mx-auto mb-4" />
+                        <p className="text-slate-600">
+                          {t('noBooks')}
+                        </p>
+                      </CardContent>
+                    </Card>
+                  ) : (
+                    <div className="space-y-4">
+                      {highestRated.map((book, index) => (
+                        <BookListItem key={book.id} book={book} rank={index + 1} />
+                      ))}
+                    </div>
+                  )}
+                </TabsContent>
+              </Tabs>
+            </div>
+
+            {/* Sidebar with Trending Books */}
+            <div className="lg:col-span-1">
+              <div className="sticky top-8">
+                <TrendingBooks />
+              </div>
+            </div>
+          </div>
         </div>
       </main>
     </div>

@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Search, BookOpen, Home, List, User, LogOut } from 'lucide-react'
+import { Search, BookOpen, Home, List, User, LogOut, Users } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import type { Profile } from '@/types/database.types'
 import { LanguageSwitcher } from './language-switcher'
@@ -60,6 +60,7 @@ export function Navbar() {
     { href: '/', label: t('home'), icon: Home },
     { href: '/books', label: t('books'), icon: BookOpen },
     { href: '/lists', label: t('lists'), icon: List },
+    { href: '/users', label: 'Find Friends', icon: Users },
   ]
 
   return (

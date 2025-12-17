@@ -21,6 +21,7 @@ import {
   MessageSquare
 } from 'lucide-react'
 import { getBookById, formatBookForDatabase, type GoogleBook } from '@/lib/google-books'
+import { getBookByIdMultiAPI, formatUnifiedBookForDatabase } from '@/lib/book-apis'
 import { createClient } from '@/lib/supabase/client'
 import type { Review, UserBook } from '@/types/database.types'
 import { formatDistanceToNow } from 'date-fns'
@@ -51,62 +52,122 @@ export default function BookDetailPage() {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true)
-      
+
       // Get current user
       const { data: { user } } = await supabase.auth.getUser()
       setUserId(user?.id || null)
 
-      // Fetch book from Google Books
+      // Fetch book - check if it's a multi-API ID or Google Books ID
       try {
-        const googleBook = await getBookById(bookId)
-        setBook(googleBook)
+        let googleBook: GoogleBook | null = null
+        let actualBookId = bookId
 
-        // Cache book in our database
-        const formattedBook = formatBookForDatabase(googleBook)
-        await supabase
-          .from('books')
-          .upsert(formattedBook, { onConflict: 'id' })
+        // Handle multi-API IDs (format: "google/123" or "openlibrary/works/OL123")
+        if (bookId.includes('/')) {
+          const [source, ...idParts] = bookId.split('/')
+          const sourceId = idParts.join('/')
 
-        // Fetch user's book status
-        if (user) {
-          const { data: userBookData } = await supabase
-            .from('user_books')
-            .select('*')
-            .eq('user_id', user.id)
-            .eq('book_id', bookId)
-            .single()
+          if (source === 'google' || source === 'openlibrary') {
+            const unifiedBook = await getBookByIdMultiAPI(`${source}:${sourceId}`)
 
-          setUserBook(userBookData)
-          if (userBookData?.rating) {
-            setSelectedRating(userBookData.rating)
+            if (unifiedBook) {
+              // Convert unified book to Google Book format for compatibility
+              googleBook = {
+                id: unifiedBook.id,
+                volumeInfo: {
+                  title: unifiedBook.title,
+                  authors: unifiedBook.authors,
+                  description: unifiedBook.description,
+                  imageLinks: unifiedBook.coverUrl ? {
+                    thumbnail: unifiedBook.coverUrl
+                  } : undefined,
+                  publishedDate: unifiedBook.publishedDate,
+                  pageCount: unifiedBook.pageCount,
+                  categories: unifiedBook.categories,
+                  industryIdentifiers: [
+                    ...(unifiedBook.isbn10 ? [{ type: 'ISBN_10', identifier: unifiedBook.isbn10 }] : []),
+                    ...(unifiedBook.isbn13 ? [{ type: 'ISBN_13', identifier: unifiedBook.isbn13 }] : [])
+                  ]
+                }
+              }
+              actualBookId = unifiedBook.id
+            }
           }
-
-          // Fetch user's review
-          const { data: reviewData } = await supabase
-            .from('reviews')
-            .select('*')
-            .eq('user_id', user.id)
-            .eq('book_id', bookId)
-            .single()
-
-          if (reviewData) {
-            setReviewText(reviewData.content)
-            setContainsSpoilers(reviewData.contains_spoilers)
-          }
+        } else {
+          // Traditional Google Books ID
+          googleBook = await getBookById(bookId)
+          actualBookId = `google:${bookId}`
         }
 
-        // Fetch all reviews
-        const { data: reviewsData } = await supabase
-          .from('reviews')
-          .select(`
-            *,
-            profile:profiles(id, username, full_name, avatar_url),
-            user_book:user_books!reviews_user_book_id_fkey(rating)
-          `)
-          .eq('book_id', bookId)
-          .order('created_at', { ascending: false })
+        if (googleBook) {
+          setBook(googleBook)
 
-        setReviews(reviewsData || [])
+          // Cache book in our database
+          const formattedBook = actualBookId.startsWith('google:')
+            ? formatBookForDatabase(googleBook)
+            : formatUnifiedBookForDatabase({
+                id: actualBookId,
+                source: actualBookId.split(':')[0] as 'google' | 'openlibrary',
+                title: googleBook.volumeInfo.title,
+                authors: googleBook.volumeInfo.authors || ['Unknown Author'],
+                description: googleBook.volumeInfo.description,
+                coverUrl: googleBook.volumeInfo.imageLinks?.thumbnail,
+                publishedDate: googleBook.volumeInfo.publishedDate,
+                pageCount: googleBook.volumeInfo.pageCount,
+                categories: googleBook.volumeInfo.categories,
+                isbn10: googleBook.volumeInfo.industryIdentifiers?.find(i => i.type === 'ISBN_10')?.identifier,
+                isbn13: googleBook.volumeInfo.industryIdentifiers?.find(i => i.type === 'ISBN_13')?.identifier,
+              })
+
+          await supabase
+            .from('books')
+            .upsert(formattedBook, { onConflict: 'id' })
+
+          // Fetch user's book status
+          if (user) {
+            const { data: userBookData } = await supabase
+              .from('user_books')
+              .select('*')
+              .eq('user_id', user.id)
+              .eq('book_id', actualBookId)
+              .single()
+
+            setUserBook(userBookData)
+            if (userBookData?.rating) {
+              setSelectedRating(userBookData.rating)
+            }
+
+            // Fetch user's review
+            const { data: reviewData } = await supabase
+              .from('reviews')
+              .select('*')
+              .eq('user_id', user.id)
+              .eq('book_id', actualBookId)
+              .single()
+
+            if (reviewData) {
+              setReviewText(reviewData.content)
+              setContainsSpoilers(reviewData.contains_spoilers)
+            }
+          }
+
+          // Fetch all reviews
+          const { data: reviewsData, error: reviewsError } = await supabase
+            .from('reviews')
+            .select(`
+              *,
+              profile:profiles(id, username, full_name, avatar_url),
+              user_book:user_books(rating)
+            `)
+            .eq('book_id', actualBookId)
+            .order('created_at', { ascending: false })
+
+          if (reviewsError) {
+            console.error('Error fetching reviews:', reviewsError)
+          }
+
+          setReviews(reviewsData || [])
+        }
       } catch (error) {
         console.error('Error fetching book:', error)
       } finally {

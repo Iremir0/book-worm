@@ -7,8 +7,9 @@ import { Navbar } from '@/components/navbar'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { Search, Loader2 } from 'lucide-react'
-import { searchBooks, type GoogleBook } from '@/lib/google-books'
+import { Badge } from '@/components/ui/badge'
+import { Search, Loader2, BookOpen } from 'lucide-react'
+import { searchBooksMultiAPI, type UnifiedBook } from '@/lib/book-apis'
 import Link from 'next/link'
 
 export default function SearchPage() {
@@ -18,7 +19,7 @@ export default function SearchPage() {
   const initialQuery = searchParams.get('q') || ''
 
   const [query, setQuery] = useState(initialQuery)
-  const [results, setResults] = useState<GoogleBook[]>([])
+  const [results, setResults] = useState<UnifiedBook[]>([])
   const [loading, setLoading] = useState(false)
   const [searched, setSearched] = useState(false)
 
@@ -34,10 +35,10 @@ export default function SearchPage() {
 
     setLoading(true)
     setSearched(true)
-    
+
     try {
-      const data = await searchBooks(q)
-      setResults(data.items || [])
+      const data = await searchBooksMultiAPI(q)
+      setResults(data)
     } catch (error) {
       console.error('Search failed:', error)
     } finally {
@@ -121,63 +122,73 @@ export default function SearchPage() {
   )
 }
 
-function BookSearchResult({ book }: { book: GoogleBook }) {
+function BookSearchResult({ book }: { book: UnifiedBook }) {
   const tBook = useTranslations('book')
-  const { volumeInfo } = book
-  const authors = volumeInfo.authors?.join(', ') || 'Unknown Author'
-  const coverUrl = volumeInfo.imageLinks?.thumbnail?.replace('http:', 'https:')
-  const description = volumeInfo.description
-  const truncatedDescription = description 
-    ? description.length > 200 
-      ? description.substring(0, 200) + '...' 
-      : description
+  const authors = book.authors.join(', ')
+  const truncatedDescription = book.description
+    ? book.description.length > 200
+      ? book.description.substring(0, 200) + '...'
+      : book.description
     : 'No description available'
 
+  // Remove HTML tags if present
+  const cleanDescription = truncatedDescription.replace(/<[^>]*>/g, '')
+
   return (
-    <Link href={`/book/${book.id}`}>
+    <Link href={`/book/${book.id.replace(':', '/')}`}>
       <Card className="hover:shadow-lg transition-shadow cursor-pointer">
         <CardContent className="p-6">
           <div className="flex gap-4">
-            {coverUrl ? (
+            {book.coverUrl ? (
               <img
-                src={coverUrl}
-                alt={volumeInfo.title}
+                src={book.coverUrl}
+                alt={book.title}
                 className="w-24 h-36 object-cover rounded shadow-sm flex-shrink-0"
               />
             ) : (
               <div className="w-24 h-36 bg-slate-200 rounded flex items-center justify-center flex-shrink-0">
-                <span className="text-xs text-slate-400 text-center px-2">
-                  No cover
-                </span>
+                <BookOpen className="h-8 w-8 text-slate-400" />
               </div>
             )}
-            
+
             <div className="flex-1 min-w-0">
-              <h3 className="text-lg font-semibold text-slate-900 mb-1 hover:text-primary transition-colors">
-                {volumeInfo.title}
-              </h3>
+              <div className="flex items-start gap-2 mb-1">
+                <h3 className="text-lg font-semibold text-slate-900 hover:text-primary transition-colors flex-1">
+                  {book.title}
+                </h3>
+                <Badge variant="outline" className="text-xs">
+                  {book.source === 'google' ? 'Google Books' : 'Open Library'}
+                </Badge>
+              </div>
               <p className="text-sm text-slate-600 mb-2">{authors}</p>
-              
+
               <div className="flex flex-wrap gap-2 mb-2">
-                {volumeInfo.publishedDate && (
+                {book.publishedDate && (
                   <span className="text-xs text-slate-500">
-                    {new Date(volumeInfo.publishedDate).getFullYear()}
+                    {book.publishedDate.includes('-')
+                      ? new Date(book.publishedDate).getFullYear()
+                      : book.publishedDate}
                   </span>
                 )}
-                {volumeInfo.pageCount && (
+                {book.pageCount && (
                   <span className="text-xs text-slate-500">
-                    • {tBook('pages', { count: volumeInfo.pageCount })}
+                    • {book.pageCount} pages
                   </span>
                 )}
-                {volumeInfo.categories && volumeInfo.categories[0] && (
+                {book.categories && book.categories[0] && (
                   <span className="text-xs text-slate-500">
-                    • {volumeInfo.categories[0]}
+                    • {book.categories[0]}
+                  </span>
+                )}
+                {book.publisher && (
+                  <span className="text-xs text-slate-500">
+                    • {book.publisher}
                   </span>
                 )}
               </div>
-              
+
               <p className="text-sm text-slate-600 line-clamp-2">
-                {truncatedDescription}
+                {cleanDescription}
               </p>
             </div>
           </div>
