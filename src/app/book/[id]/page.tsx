@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { Navbar } from '@/components/navbar'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -26,6 +27,8 @@ import { formatDistanceToNow } from 'date-fns'
 import Link from 'next/link'
 
 export default function BookDetailPage() {
+  const t = useTranslations('book')
+  const tCommon = useTranslations('common')
   const params = useParams()
   const bookId = params.id as string
   const supabase = createClient()
@@ -306,7 +309,7 @@ export default function BookDetailPage() {
 
                   {/* Rating */}
                   <div className="mb-6">
-                    <Label className="mb-2 block">Your Rating</Label>
+                    <Label className="mb-2 block">{t('rate')}</Label>
                     <div className="flex gap-1">
                       {[1, 2, 3, 4, 5].map((rating) => (
                         <button
@@ -336,7 +339,7 @@ export default function BookDetailPage() {
                       onClick={() => handleShelfChange('want_to_read')}
                     >
                       <Heart className="mr-2 h-4 w-4" />
-                      Want to Read
+                      {t('addToShelf')} - Want to Read
                     </Button>
                     <Button
                       variant={userBook?.shelf === 'currently_reading' ? 'default' : 'outline'}
@@ -376,7 +379,7 @@ export default function BookDetailPage() {
                     </Badge>
                   )}
                   {volumeInfo.pageCount && (
-                    <Badge variant="secondary">{volumeInfo.pageCount} pages</Badge>
+                    <Badge variant="secondary">{t('pages', { count: volumeInfo.pageCount })}</Badge>
                   )}
                   {volumeInfo.categories?.map((category) => (
                     <Badge key={category} variant="outline">
@@ -400,9 +403,9 @@ export default function BookDetailPage() {
                 <TabsList>
                   <TabsTrigger value="reviews">
                     <MessageSquare className="mr-2 h-4 w-4" />
-                    Reviews ({reviews.length})
+                    {t('reviews')} ({reviews.length})
                   </TabsTrigger>
-                  <TabsTrigger value="write">Write Review</TabsTrigger>
+                  <TabsTrigger value="write">{t('writeReview')}</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="reviews" className="space-y-4 mt-4">
@@ -410,7 +413,7 @@ export default function BookDetailPage() {
                     <Card>
                       <CardContent className="p-12 text-center">
                         <MessageSquare className="h-12 w-12 text-slate-300 mx-auto mb-4" />
-                        <p className="text-slate-600">No reviews yet. Be the first!</p>
+                        <p className="text-slate-600">{t('noReviews')}</p>
                       </CardContent>
                     </Card>
                   ) : (
@@ -461,7 +464,7 @@ export default function BookDetailPage() {
                               </p>
                               {review.contains_spoilers && (
                                 <Badge variant="outline" className="mt-2">
-                                  Contains Spoilers
+                                  {t('containsSpoilers')}
                                 </Badge>
                               )}
                             </div>
@@ -476,7 +479,7 @@ export default function BookDetailPage() {
                   <Card>
                     <CardContent className="p-6 space-y-4">
                       <div>
-                        <Label htmlFor="review">Your Review</Label>
+                        <Label htmlFor="review">{t('writeReview')}</Label>
                         <Textarea
                           id="review"
                           placeholder="Share your thoughts about this book..."
@@ -495,7 +498,7 @@ export default function BookDetailPage() {
                           className="rounded"
                         />
                         <Label htmlFor="spoilers" className="cursor-pointer">
-                          This review contains spoilers
+                          {t('containsSpoilers')}
                         </Label>
                       </div>
                       <Button
@@ -505,10 +508,10 @@ export default function BookDetailPage() {
                         {submitting ? (
                           <>
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Submitting...
+                            {tCommon('loading')}
                           </>
                         ) : (
-                          'Submit Review'
+                          tCommon('submit')
                         )}
                       </Button>
                     </CardContent>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { Navbar } from '@/components/navbar'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -25,6 +26,7 @@ import Link from 'next/link'
 import { formatDistanceToNow } from 'date-fns'
 
 export default function ListDetailPage() {
+  const t = useTranslations('common')
   const params = useParams()
   const router = useRouter()
   const listId = params.id as string
@@ -288,7 +290,7 @@ export default function ListDetailPage() {
                 )}
               </div>
 
-              <Badge variant="secondary">{items.length} books</Badge>
+              <Badge variant="secondary">{items.length} {items.length === 1 ? 'book' : 'books'}</Badge>
             </CardContent>
           </Card>
 

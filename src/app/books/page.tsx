@@ -9,6 +9,7 @@ import { Loader2, TrendingUp, Star } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import type { Book, UserBook } from '@/types/database.types'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 
 interface BookWithStats extends Book {
   rating_count: number
@@ -16,6 +17,7 @@ interface BookWithStats extends Book {
 }
 
 export default function BooksPage() {
+  const t = useTranslations('books')
   const supabase = createClient()
   const [popularBooks, setPopularBooks] = useState<BookWithStats[]>([])
   const [highestRated, setHighestRated] = useState<BookWithStats[]>([])
@@ -95,7 +97,7 @@ export default function BooksPage() {
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-slate-900 mb-2">Discover Books</h1>
+            <h1 className="text-3xl font-bold text-slate-900 mb-2">{t('title')}</h1>
             <p className="text-slate-600">Popular and highly-rated books from our community</p>
           </div>
 
@@ -103,11 +105,11 @@ export default function BooksPage() {
             <TabsList className="mb-6">
               <TabsTrigger value="popular">
                 <TrendingUp className="mr-2 h-4 w-4" />
-                Most Popular
+                {t('mostPopular')}
               </TabsTrigger>
               <TabsTrigger value="rated">
                 <Star className="mr-2 h-4 w-4" />
-                Highest Rated
+                {t('highestRated')}
               </TabsTrigger>
             </TabsList>
 
@@ -117,7 +119,7 @@ export default function BooksPage() {
                   <CardContent className="p-12 text-center">
                     <TrendingUp className="h-12 w-12 text-slate-300 mx-auto mb-4" />
                     <p className="text-slate-600">
-                      No popular books yet. Start rating books to see them here!
+                      {t('noBooks')}
                     </p>
                   </CardContent>
                 </Card>
@@ -136,7 +138,7 @@ export default function BooksPage() {
                   <CardContent className="p-12 text-center">
                     <Star className="h-12 w-12 text-slate-300 mx-auto mb-4" />
                     <p className="text-slate-600">
-                      No rated books yet. Start rating books to see them here!
+                      {t('noBooks')}
                     </p>
                   </CardContent>
                 </Card>
@@ -199,7 +201,7 @@ function BookListItem({ book, rank }: BookListItemProps) {
                   </span>
                 </div>
                 <span className="text-sm text-slate-600">
-                  {book.rating_count} rating{book.rating_count !== 1 ? 's' : ''}
+                  {book.rating_count} {book.rating_count === 1 ? 'rating' : 'ratings'}
                 </span>
               </div>
 
@@ -220,7 +222,7 @@ function BookListItem({ book, rank }: BookListItemProps) {
                 ))}
                 {book.page_count && (
                   <span className="text-xs text-slate-500">
-                    {book.page_count} pages
+                    {book.page_count} {book.page_count === 1 ? 'page' : 'pages'}
                   </span>
                 )}
                 {book.published_date && (

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useTranslations } from 'next-intl'
 import { Navbar } from '@/components/navbar'
 import { Card, CardContent } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -26,6 +27,8 @@ import type { UserBook, ShelfType } from '@/types/database.types'
 import Link from 'next/link'
 
 export default function ShelvesPage() {
+  const t = useTranslations('shelves')
+  const tCommon = useTranslations('common')
   const supabase = createClient()
   const [userBooks, setUserBooks] = useState<UserBook[]>([])
   const [loading, setLoading] = useState(true)
@@ -126,25 +129,24 @@ export default function ShelvesPage() {
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-slate-900">My Shelves</h1>
-            <p className="text-slate-600 mt-1">Organize and track your reading journey</p>
+            <h1 className="text-3xl font-bold text-slate-900">{t('title')}</h1>
           </div>
 
           <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as ShelfType)}>
             <TabsList className="mb-6">
               <TabsTrigger value="read" className="gap-2">
                 <BookMarked className="h-4 w-4" />
-                Read
+                {t('read')}
                 <Badge variant="secondary">{readBooks.length}</Badge>
               </TabsTrigger>
               <TabsTrigger value="currently_reading" className="gap-2">
                 <BookOpen className="h-4 w-4" />
-                Currently Reading
+                {t('currentlyReading')}
                 <Badge variant="secondary">{currentlyReadingBooks.length}</Badge>
               </TabsTrigger>
               <TabsTrigger value="want_to_read" className="gap-2">
                 <Heart className="h-4 w-4" />
-                Want to Read
+                {t('wantToRead')}
                 <Badge variant="secondary">{wantToReadBooks.length}</Badge>
               </TabsTrigger>
             </TabsList>
@@ -152,7 +154,7 @@ export default function ShelvesPage() {
             <TabsContent value="read">
               <ShelfContent
                 books={readBooks}
-                emptyMessage="No books marked as read yet"
+                emptyMessage={t('noBooks')}
                 onShelfChange={handleShelfChange}
                 onRemove={handleRemoveBook}
               />
@@ -161,7 +163,7 @@ export default function ShelvesPage() {
             <TabsContent value="currently_reading">
               <ShelfContent
                 books={currentlyReadingBooks}
-                emptyMessage="No books currently reading"
+                emptyMessage={t('noBooks')}
                 onShelfChange={handleShelfChange}
                 onRemove={handleRemoveBook}
               />
@@ -170,7 +172,7 @@ export default function ShelvesPage() {
             <TabsContent value="want_to_read">
               <ShelfContent
                 books={wantToReadBooks}
-                emptyMessage="No books in want to read"
+                emptyMessage={t('noBooks')}
                 onShelfChange={handleShelfChange}
                 onRemove={handleRemoveBook}
               />
@@ -193,6 +195,9 @@ function ShelfContent({
   onShelfChange: (bookId: string, shelf: ShelfType) => void
   onRemove: (bookId: string) => void
 }) {
+  const t = useTranslations('shelves')
+  const tCommon = useTranslations('common')
+  const tBook = useTranslations('book')
   if (books.length === 0) {
     return (
       <Card>
@@ -251,26 +256,26 @@ function ShelfContent({
                         onClick={() => onShelfChange(userBook.id, 'want_to_read')}
                       >
                         <Heart className="mr-2 h-4 w-4" />
-                        Want to Read
+                        {t('wantToRead')}
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         onClick={() => onShelfChange(userBook.id, 'currently_reading')}
                       >
                         <BookOpen className="mr-2 h-4 w-4" />
-                        Currently Reading
+                        {t('currentlyReading')}
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         onClick={() => onShelfChange(userBook.id, 'read')}
                       >
                         <BookMarked className="mr-2 h-4 w-4" />
-                        Read
+                        {t('read')}
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         onClick={() => onRemove(userBook.id)}
                         className="text-red-600"
                       >
                         <Trash2 className="mr-2 h-4 w-4" />
-                        Remove
+                        {tBook('removeFromShelf')}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -284,7 +289,7 @@ function ShelfContent({
                   )}
                   {userBook.book?.page_count && (
                     <Badge variant="outline" className="text-xs">
-                      {userBook.book.page_count} pages
+                      {tBook('pages', { count: userBook.book.page_count })}
                     </Badge>
                   )}
                   {userBook.book?.categories?.[0] && (
@@ -296,7 +301,7 @@ function ShelfContent({
 
                 {userBook.rating && (
                   <div className="flex items-center gap-1 mb-2">
-                    <span className="text-sm text-slate-600">Your rating:</span>
+                    <span className="text-sm text-slate-600">{t('rating')}:</span>
                     <div className="flex">
                       {[...Array(5)].map((_, i) => (
                         <Star

@@ -1,0 +1,121 @@
+{
+  "common": {
+    "search": "Ara",
+    "loading": "Yükleniyor...",
+    "save": "Kaydet",
+    "cancel": "İptal",
+    "delete": "Sil",
+    "edit": "Düzenle",
+    "close": "Kapat",
+    "submit": "Gönder",
+    "back": "Geri"
+  },
+  "nav": {
+    "home": "Ana Sayfa",
+    "books": "Kitaplar",
+    "shelves": "Raflarım",
+    "lists": "Listeler",
+    "profile": "Profil",
+    "signOut": "Çıkış Yap",
+    "signIn": "Giriş Yap",
+    "signUp": "Kayıt Ol",
+    "searchPlaceholder": "Kitap ara..."
+  },
+  "auth": {
+    "login": {
+      "title": "Tekrar Hoş Geldiniz",
+      "subtitle": "Book Worm'a devam etmek için giriş yapın",
+      "email": "E-posta",
+      "password": "Şifre",
+      "submit": "Giriş Yap",
+      "noAccount": "Hesabınız yok mu?",
+      "signUpLink": "Kayıt ol",
+      "error": "Geçersiz e-posta veya şifre"
+    },
+    "signup": {
+      "title": "Hesap Oluştur",
+      "subtitle": "Bugün Book Worm'a katılın",
+      "email": "E-posta",
+      "password": "Şifre",
+      "fullName": "Ad Soyad",
+      "username": "Kullanıcı Adı",
+      "submit": "Kayıt Ol",
+      "hasAccount": "Zaten hesabınız var mı?",
+      "signInLink": "Giriş yap",
+      "error": "Hesap oluşturulamadı"
+    }
+  },
+  "home": {
+    "title": "Aktivite Akışı",
+    "noActivities": "Henüz aktivite yok. Okuma aktivitelerini görmek için kullanıcıları takip edin!",
+    "trending": "Trend Kitaplar"
+  },
+  "books": {
+    "title": "Kitapları Keşfet",
+    "mostPopular": "En Popüler",
+    "highestRated": "En Yüksek Puanlı",
+    "noBooks": "Kitap bulunamadı",
+    "by": "yazar:",
+    "ratings": "{count} değerlendirme",
+    "averageRating": "{rating} ortalama puan"
+  },
+  "shelves": {
+    "title": "Raflarım",
+    "read": "Okuduklarım",
+    "currentlyReading": "Şu An Okuduklarım",
+    "wantToRead": "Okumak İstediklerim",
+    "noBooks": "Bu rafta henüz kitap yok",
+    "finishedOn": "{date} tarihinde bitirildi",
+    "startedOn": "{date} tarihinde başlandı",
+    "addedOn": "{date} tarihinde eklendi",
+    "rating": "Puan"
+  },
+  "book": {
+    "addToShelf": "Rafa Ekle",
+    "removeFromShelf": "Raftan Kaldır",
+    "rate": "Bu kitabı puanla",
+    "writeReview": "İnceleme Yaz",
+    "reviews": "İncelemeler",
+    "noReviews": "Henüz inceleme yok",
+    "containsSpoilers": "Spoiler içerir",
+    "publishedOn": "{date} tarihinde yayınlandı",
+    "pages": "{count} sayfa",
+    "categories": "Kategoriler",
+    "description": "Açıklama"
+  },
+  "lists": {
+    "title": "Okuma Listeleri",
+    "myLists": "Listelerim",
+    "createNew": "Yeni Liste Oluştur",
+    "listTitle": "Liste Başlığı",
+    "listDescription": "Açıklama",
+    "makePublic": "Bu listeyi herkese açık yap",
+    "noLists": "Henüz liste oluşturmadınız"
+  },
+  "profile": {
+    "following": "Takip Edilen",
+    "followers": "Takipçi",
+    "books": "Kitap",
+    "follow": "Takip Et",
+    "unfollow": "Takibi Bırak",
+    "editProfile": "Profili Düzenle",
+    "activity": "Aktivite",
+    "shelves": "Raflar",
+    "lists": "Listeler"
+  },
+  "activity": {
+    "finishedReading": "okumayı bitirdi",
+    "startedReading": "okumaya başladı",
+    "wantsToRead": "okumak istiyor",
+    "rated": "puanladı",
+    "reviewed": "inceleme yazdı",
+    "addedToList": "listeye ekledi",
+    "followedUser": "takip etti",
+    "createdList": "yeni liste oluşturdu"
+  },
+  "language": {
+    "selectLanguage": "Dil Seçin",
+    "english": "İngilizce",
+    "turkish": "Türkçe"
+  }
+}

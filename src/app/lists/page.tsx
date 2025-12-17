@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useTranslations } from 'next-intl'
 import { Navbar } from '@/components/navbar'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -17,6 +18,8 @@ import Link from 'next/link'
 import { formatDistanceToNow } from 'date-fns'
 
 export default function ListsPage() {
+  const t = useTranslations('lists')
+  const tCommon = useTranslations('common')
   const supabase = createClient()
   const [lists, setLists] = useState<List[]>([])
   const [myLists, setMyLists] = useState<List[]>([])
@@ -138,8 +141,7 @@ export default function ListsPage() {
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h1 className="text-3xl font-bold text-slate-900">Lists</h1>
-              <p className="text-slate-600 mt-1">Curated book collections from the community</p>
+              <h1 className="text-3xl font-bold text-slate-900">{t('title')}</h1>
             </div>
 
             {userId && (
@@ -147,16 +149,16 @@ export default function ListsPage() {
                 <DialogTrigger asChild>
                   <Button>
                     <Plus className="mr-2 h-4 w-4" />
-                    Create List
+                    {t('createNew')}
                   </Button>
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
-                    <DialogTitle>Create a New List</DialogTitle>
+                    <DialogTitle>{t('createNew')}</DialogTitle>
                   </DialogHeader>
                   <div className="space-y-4 mt-4">
                     <div>
-                      <Label htmlFor="title">Title</Label>
+                      <Label htmlFor="title">{t('listTitle')}</Label>
                       <Input
                         id="title"
                         placeholder="e.g., Best Sci-Fi of 2024"
@@ -165,7 +167,7 @@ export default function ListsPage() {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="description">Description (optional)</Label>
+                      <Label htmlFor="description">{t('listDescription')}</Label>
                       <Textarea
                         id="description"
                         placeholder="What's this list about?"
@@ -183,7 +185,7 @@ export default function ListsPage() {
                         className="rounded"
                       />
                       <Label htmlFor="public" className="cursor-pointer">
-                        Make this list public
+                        {t('makePublic')}
                       </Label>
                     </div>
                     <Button
@@ -194,10 +196,10 @@ export default function ListsPage() {
                       {creating ? (
                         <>
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Creating...
+                          {tCommon('loading')}
                         </>
                       ) : (
-                        'Create List'
+                        t('createNew')
                       )}
                     </Button>
                   </div>
@@ -209,7 +211,7 @@ export default function ListsPage() {
           {/* My Lists Section */}
           {myLists.length > 0 && (
             <div className="mb-8">
-              <h2 className="text-xl font-semibold text-slate-900 mb-4">My Lists</h2>
+              <h2 className="text-xl font-semibold text-slate-900 mb-4">{t('myLists')}</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {myLists.map((list) => (
                   <ListCard key={list.id} list={list} showAuthor={false} />
@@ -227,8 +229,7 @@ export default function ListsPage() {
               <Card>
                 <CardContent className="p-12 text-center">
                   <ListIcon className="h-12 w-12 text-slate-300 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-slate-900 mb-2">No lists yet</h3>
-                  <p className="text-slate-600">Be the first to create a list!</p>
+                  <h3 className="text-lg font-semibold text-slate-900 mb-2">{t('noLists')}</h3>
                 </CardContent>
               </Card>
             ) : (

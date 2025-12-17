@@ -8,14 +8,18 @@ import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import Link from 'next/link'
 import { formatDistanceToNow } from 'date-fns'
+import { tr, enUS } from 'date-fns/locale'
 import { BookOpen, Star, List, UserPlus } from 'lucide-react'
 import type { Activity } from '@/types/database.types'
+import { useTranslations } from 'next-intl'
+import { getCurrentLocale } from '@/lib/language'
 
 interface ActivityFeedProps {
   userId: string
 }
 
 export function ActivityFeed({ userId }: ActivityFeedProps) {
+  const t = useTranslations('home')
   const [activities, setActivities] = useState<Activity[]>([])
   const [loading, setLoading] = useState(true)
   const supabase = createClient()
@@ -105,9 +109,9 @@ export function ActivityFeed({ userId }: ActivityFeedProps) {
       <Card>
         <CardContent className="p-12 text-center">
           <BookOpen className="h-12 w-12 text-slate-300 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-slate-900 mb-2">No activity yet</h3>
+          <h3 className="text-lg font-semibold text-slate-900 mb-2">{t('title')}</h3>
           <p className="text-slate-600">
-            Follow other users to see their reading activity here
+            {t('noActivities')}
           </p>
         </CardContent>
       </Card>
@@ -128,6 +132,10 @@ export function ActivityFeed({ userId }: ActivityFeedProps) {
 }
 
 function ActivityItem({ activity }: { activity: Activity }) {
+  const t = useTranslations('activity')
+  const locale = getCurrentLocale()
+  const dateLocale = locale === 'tr' ? tr : enUS
+
   const getActivityIcon = () => {
     switch (activity.activity_type) {
       case 'review':
@@ -155,7 +163,7 @@ function ActivityItem({ activity }: { activity: Activity }) {
             <Link href={`/profile/${username}`} className="font-semibold hover:underline">
               {activity.profile?.full_name || username}
             </Link>
-            {' reviewed '}
+            {' ' + t('reviewed') + ' '}
             <Link href={`/book/${activity.book?.id}`} className="font-semibold hover:underline">
               {activity.book?.title}
             </Link>
@@ -167,7 +175,7 @@ function ActivityItem({ activity }: { activity: Activity }) {
             <Link href={`/profile/${username}`} className="font-semibold hover:underline">
               {activity.profile?.full_name || username}
             </Link>
-            {' rated '}
+            {' ' + t('rated') + ' '}
             <Link href={`/book/${activity.book?.id}`} className="font-semibold hover:underline">
               {activity.book?.title}
             </Link>
@@ -180,9 +188,9 @@ function ActivityItem({ activity }: { activity: Activity }) {
         )
       case 'shelf_add':
         const shelfNames: Record<string, string> = {
-          read: 'finished reading',
-          currently_reading: 'started reading',
-          want_to_read: 'wants to read',
+          read: t('finishedReading'),
+          currently_reading: t('startedReading'),
+          want_to_read: t('wantsToRead'),
         }
         return (
           <>
@@ -201,7 +209,7 @@ function ActivityItem({ activity }: { activity: Activity }) {
             <Link href={`/profile/${username}`} className="font-semibold hover:underline">
               {activity.profile?.full_name || username}
             </Link>
-            {' created a list: '}
+            {' ' + t('createdList') + ' '}
             <Link href={`/list/${activity.list?.id}`} className="font-semibold hover:underline">
               {activity.list?.title}
             </Link>
@@ -213,7 +221,7 @@ function ActivityItem({ activity }: { activity: Activity }) {
             <Link href={`/profile/${username}`} className="font-semibold hover:underline">
               {activity.profile?.full_name || username}
             </Link>
-            {' started following '}
+            {' ' + t('followedUser') + ' '}
             <Link href={`/profile/${activity.target_profile?.username}`} className="font-semibold hover:underline">
               {activity.target_profile?.full_name || activity.target_profile?.username}
             </Link>
@@ -244,7 +252,7 @@ function ActivityItem({ activity }: { activity: Activity }) {
         </div>
 
         <p className="text-xs text-slate-500">
-          {formatDistanceToNow(new Date(activity.created_at), { addSuffix: true })}
+          {formatDistanceToNow(new Date(activity.created_at), { addSuffix: true, locale: dateLocale })}
         </p>
 
         {activity.activity_type === 'review' && activity.review && (

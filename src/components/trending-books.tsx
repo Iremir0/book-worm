@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import Link from 'next/link'
 import { TrendingUp } from 'lucide-react'
 import type { Book } from '@/types/database.types'
+import { useTranslations } from 'next-intl'
 
 interface BookWithStats extends Book {
   rating_count: number
@@ -13,6 +14,7 @@ interface BookWithStats extends Book {
 }
 
 export function TrendingBooks() {
+  const t = useTranslations('home')
   const [books, setBooks] = useState<BookWithStats[]>([])
   const [loading, setLoading] = useState(true)
   const supabase = createClient()
@@ -72,7 +74,7 @@ export function TrendingBooks() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <TrendingUp className="h-5 w-5" />
-            Trending Books
+            {t('trending')}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -98,7 +100,7 @@ export function TrendingBooks() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <TrendingUp className="h-5 w-5" />
-            Trending Books
+            {t('trending')}
           </CardTitle>
         </CardHeader>
         <CardContent>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { Navbar } from '@/components/navbar'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -11,9 +12,11 @@ import { searchBooks, type GoogleBook } from '@/lib/google-books'
 import Link from 'next/link'
 
 export default function SearchPage() {
+  const t = useTranslations('common')
+  const tBooks = useTranslations('books')
   const searchParams = useSearchParams()
   const initialQuery = searchParams.get('q') || ''
-  
+
   const [query, setQuery] = useState(initialQuery)
   const [results, setResults] = useState<GoogleBook[]>([])
   const [loading, setLoading] = useState(false)
@@ -52,7 +55,7 @@ export default function SearchPage() {
       <Navbar />
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl font-bold text-slate-900 mb-6">Search Books</h1>
+          <h1 className="text-3xl font-bold text-slate-900 mb-6">{t('search')}</h1>
           
           <form onSubmit={handleSubmit} className="mb-8">
             <div className="flex gap-2">
@@ -70,10 +73,10 @@ export default function SearchPage() {
                 {loading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Searching...
+                    {t('loading')}
                   </>
                 ) : (
-                  'Search'
+                  t('search')
                 )}
               </Button>
             </div>
@@ -82,7 +85,7 @@ export default function SearchPage() {
           {loading && (
             <div className="text-center py-12">
               <Loader2 className="h-12 w-12 animate-spin text-primary mx-auto mb-4" />
-              <p className="text-slate-600">Searching for books...</p>
+              <p className="text-slate-600">{t('loading')}</p>
             </div>
           )}
 
@@ -91,7 +94,7 @@ export default function SearchPage() {
               <CardContent className="p-12 text-center">
                 <Search className="h-12 w-12 text-slate-300 mx-auto mb-4" />
                 <h3 className="text-lg font-semibold text-slate-900 mb-2">
-                  No books found
+                  {tBooks('noBooks')}
                 </h3>
                 <p className="text-slate-600">
                   Try adjusting your search terms
@@ -119,6 +122,7 @@ export default function SearchPage() {
 }
 
 function BookSearchResult({ book }: { book: GoogleBook }) {
+  const tBook = useTranslations('book')
   const { volumeInfo } = book
   const authors = volumeInfo.authors?.join(', ') || 'Unknown Author'
   const coverUrl = volumeInfo.imageLinks?.thumbnail?.replace('http:', 'https:')
@@ -162,7 +166,7 @@ function BookSearchResult({ book }: { book: GoogleBook }) {
                 )}
                 {volumeInfo.pageCount && (
                   <span className="text-xs text-slate-500">
-                    • {volumeInfo.pageCount} pages
+                    • {tBook('pages', { count: volumeInfo.pageCount })}
                   </span>
                 )}
                 {volumeInfo.categories && volumeInfo.categories[0] && (

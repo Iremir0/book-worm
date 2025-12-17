@@ -1,0 +1,121 @@
+{
+  "common": {
+    "search": "Search",
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "submit": "Submit",
+    "back": "Back"
+  },
+  "nav": {
+    "home": "Home",
+    "books": "Books",
+    "shelves": "My Shelves",
+    "lists": "Lists",
+    "profile": "Profile",
+    "signOut": "Sign Out",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "searchPlaceholder": "Search books..."
+  },
+  "auth": {
+    "login": {
+      "title": "Welcome Back",
+      "subtitle": "Sign in to continue to Book Worm",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign In",
+      "noAccount": "Don't have an account?",
+      "signUpLink": "Sign up",
+      "error": "Invalid email or password"
+    },
+    "signup": {
+      "title": "Create Account",
+      "subtitle": "Join Book Worm today",
+      "email": "Email",
+      "password": "Password",
+      "fullName": "Full Name",
+      "username": "Username",
+      "submit": "Sign Up",
+      "hasAccount": "Already have an account?",
+      "signInLink": "Sign in",
+      "error": "Failed to create account"
+    }
+  },
+  "home": {
+    "title": "Activity Feed",
+    "noActivities": "No activities yet. Follow some users to see their reading activity!",
+    "trending": "Trending Books"
+  },
+  "books": {
+    "title": "Discover Books",
+    "mostPopular": "Most Popular",
+    "highestRated": "Highest Rated",
+    "noBooks": "No books found",
+    "by": "by",
+    "ratings": "{count} ratings",
+    "averageRating": "{rating} average rating"
+  },
+  "shelves": {
+    "title": "My Shelves",
+    "read": "Read",
+    "currentlyReading": "Currently Reading",
+    "wantToRead": "Want to Read",
+    "noBooks": "No books on this shelf yet",
+    "finishedOn": "Finished on {date}",
+    "startedOn": "Started on {date}",
+    "addedOn": "Added on {date}",
+    "rating": "Rating"
+  },
+  "book": {
+    "addToShelf": "Add to Shelf",
+    "removeFromShelf": "Remove from Shelf",
+    "rate": "Rate this book",
+    "writeReview": "Write a Review",
+    "reviews": "Reviews",
+    "noReviews": "No reviews yet",
+    "containsSpoilers": "Contains spoilers",
+    "publishedOn": "Published {date}",
+    "pages": "{count} pages",
+    "categories": "Categories",
+    "description": "Description"
+  },
+  "lists": {
+    "title": "Reading Lists",
+    "myLists": "My Lists",
+    "createNew": "Create New List",
+    "listTitle": "List Title",
+    "listDescription": "Description",
+    "makePublic": "Make this list public",
+    "noLists": "You haven't created any lists yet"
+  },
+  "profile": {
+    "following": "Following",
+    "followers": "Followers",
+    "books": "Books",
+    "follow": "Follow",
+    "unfollow": "Unfollow",
+    "editProfile": "Edit Profile",
+    "activity": "Activity",
+    "shelves": "Shelves",
+    "lists": "Lists"
+  },
+  "activity": {
+    "finishedReading": "finished reading",
+    "startedReading": "started reading",
+    "wantsToRead": "wants to read",
+    "rated": "rated",
+    "reviewed": "reviewed",
+    "addedToList": "added to list",
+    "followedUser": "followed",
+    "createdList": "created a new list"
+  },
+  "language": {
+    "selectLanguage": "Select Language",
+    "english": "English",
+    "turkish": "Turkish"
+  }
+}

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { Navbar } from '@/components/navbar'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -24,6 +25,8 @@ import Link from 'next/link'
 import { formatDistanceToNow } from 'date-fns'
 
 export default function ProfilePage() {
+  const t = useTranslations('profile')
+  const tCommon = useTranslations('common')
   const params = useParams()
   const username = params.username as string
   const supabase = createClient()
@@ -233,12 +236,12 @@ export default function ProfilePage() {
                         {isFollowing ? (
                           <>
                             <UserMinus className="mr-2 h-4 w-4" />
-                            Unfollow
+                            {t('unfollow')}
                           </>
                         ) : (
                           <>
                             <UserPlus className="mr-2 h-4 w-4" />
-                            Follow
+                            {t('follow')}
                           </>
                         )}
                       </Button>
@@ -252,18 +255,18 @@ export default function ProfilePage() {
                   <div className="flex gap-6 text-sm">
                     <div>
                       <span className="font-semibold text-slate-900">{followerCount}</span>
-                      <span className="text-slate-600 ml-1">followers</span>
+                      <span className="text-slate-600 ml-1">{t('followers')}</span>
                     </div>
                     <div>
                       <span className="font-semibold text-slate-900">{followingCount}</span>
-                      <span className="text-slate-600 ml-1">following</span>
+                      <span className="text-slate-600 ml-1">{t('following')}</span>
                     </div>
                   </div>
 
                   <div className="flex gap-4 mt-4">
                     <Badge variant="secondary" className="flex items-center gap-1">
                       <BookOpen className="h-3 w-3" />
-                      {stats.read} read
+                      {stats.read} {t('books').toLowerCase()}
                     </Badge>
                     <Badge variant="secondary" className="flex items-center gap-1">
                       <BookOpen className="h-3 w-3" />
@@ -284,7 +287,7 @@ export default function ProfilePage() {
             <TabsList className="mb-6">
               <TabsTrigger value="books">
                 <BookOpen className="mr-2 h-4 w-4" />
-                Books ({userBooks.length})
+                {t('books')} ({userBooks.length})
               </TabsTrigger>
               <TabsTrigger value="reviews">
                 <Star className="mr-2 h-4 w-4" />
@@ -292,7 +295,7 @@ export default function ProfilePage() {
               </TabsTrigger>
               <TabsTrigger value="lists">
                 <ListIcon className="mr-2 h-4 w-4" />
-                Lists ({lists.length})
+                {t('lists')} ({lists.length})
               </TabsTrigger>
             </TabsList>
 
@@ -420,7 +423,7 @@ export default function ProfilePage() {
                           <CardTitle className="flex items-center justify-between">
                             <span className="line-clamp-1">{list.title}</span>
                             <Badge variant="secondary">
-                              {(list as any).list_items?.[0]?.count || 0} books
+                              {(list as any).list_items?.[0]?.count || 0} {t('books').toLowerCase()}
                             </Badge>
                           </CardTitle>
                         </CardHeader>

@@ -7,6 +7,7 @@ export interface Profile {
   full_name: string | null
   bio: string | null
   avatar_url: string | null
+  language: string | null
   created_at: string
   updated_at: string
 }
@@ -50,6 +51,7 @@ export interface Review {
   updated_at: string
   book?: Book
   profile?: Profile
+  user_book?: UserBook
   likes_count?: number
   is_liked?: boolean
 }

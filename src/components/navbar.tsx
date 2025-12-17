@@ -17,8 +17,11 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Search, BookOpen, Home, List, User, LogOut } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import type { Profile } from '@/types/database.types'
+import { LanguageSwitcher } from './language-switcher'
+import { useTranslations } from 'next-intl'
 
 export function Navbar() {
+  const t = useTranslations('nav')
   const pathname = usePathname()
   const router = useRouter()
   const supabase = createClient()
@@ -54,9 +57,9 @@ export function Navbar() {
   }
 
   const navItems = [
-    { href: '/', label: 'Home', icon: Home },
-    { href: '/books', label: 'Books', icon: BookOpen },
-    { href: '/lists', label: 'Lists', icon: List },
+    { href: '/', label: t('home'), icon: Home },
+    { href: '/books', label: t('books'), icon: BookOpen },
+    { href: '/lists', label: t('lists'), icon: List },
   ]
 
   return (
@@ -75,7 +78,7 @@ export function Navbar() {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 type="search"
-                placeholder="Search books..."
+                placeholder={t('searchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10"
@@ -103,8 +106,12 @@ export function Navbar() {
             })}
           </div>
 
-          {/* User Menu */}
-          <DropdownMenu>
+          {/* Language Switcher & User Menu */}
+          <div className="flex items-center gap-2">
+            <LanguageSwitcher />
+
+            {/* User Menu */}
+            <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="relative h-10 w-10 rounded-full">
                 <Avatar>
@@ -128,22 +135,23 @@ export function Navbar() {
               <DropdownMenuItem asChild>
                 <Link href={`/profile/${profile?.username}`} className="cursor-pointer">
                   <User className="mr-2 h-4 w-4" />
-                  Profile
+                  {t('profile')}
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link href="/shelves" className="cursor-pointer">
                   <BookOpen className="mr-2 h-4 w-4" />
-                  My Shelves
+                  {t('shelves')}
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-red-600">
                 <LogOut className="mr-2 h-4 w-4" />
-                Sign Out
+                {t('signOut')}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+          </div>
         </div>
 
         {/* Mobile Search */}
@@ -152,7 +160,7 @@ export function Navbar() {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
-              placeholder="Search books..."
+              placeholder={t('searchPlaceholder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10"
