@@ -77,7 +77,7 @@ export default function SignupPage() {
             </p>
           </CardContent>
           <CardFooter>
-            <Button onClick={() => router.push('auth/login')} variant="outline" className="w-full">
+            <Button onClick={() => router.push('/auth/login')} variant="outline" className="w-full">
               Back to Login
             </Button>
           </CardFooter>
@@ -162,7 +162,7 @@ export default function SignupPage() {
         <CardFooter className="flex flex-col space-y-2">
           <div className="text-sm text-center text-muted-foreground">
             {t('hasAccount')}{' '}
-            <Link href="/login" className="text-primary hover:underline font-medium">
+            <Link href="/auth/login" className="text-primary hover:underline font-medium">
               {t('signInLink')}
             </Link>
           </div>
